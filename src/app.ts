@@ -3,7 +3,7 @@ import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as logger from 'morgan'
 
-import { connectDB } from './config/db'
+// import { connectDB } from './config/db'
 import { routers } from './routers/routers'
 
 // create the app
@@ -15,7 +15,7 @@ app.use(bodyParser.json())
 app.use(logger('dev'))
 
 // connect to database
-connectDB()
+// connectDB()
 
 
 app.use(routers)

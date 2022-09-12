@@ -1,42 +1,62 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm'
-import { User } from './User'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { User } from "./User";
 
 @Entity()
 export class Goal {
-  @PrimaryGeneratedColumn('uuid')
-  id: number
+  @PrimaryGeneratedColumn("uuid")
+  id: number;
 
   @Column({
     nullable: false,
   })
-  title: string
+  title: string;
 
   @Column()
-  description: string
+  description: string;
 
   @Column({
     nullable: false,
   })
-  total_amount: number
+  total_amount: number;
 
   @Column({
     nullable: false,
   })
-  datetime_start: Date
+  datetime_start: Date;
 
   @Column({
     nullable: false,
   })
-  datetime_end: Date
+  datetime_end: Date;
 
   @Column({
     nullable: false,
   })
-  type: string
+  type: string;
 
   @OneToOne((type) => User, (user) => user.id, {
     cascade: true,
     nullable: false,
   })
-  user: User
+  user: User;
+
+  @CreateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP(6)",
+  })
+  datetime_created: Date;
+
+  @UpdateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP(6)",
+    onUpdate: "CURRENT_TIMESTAMP(6)",
+  })
+  datetime_updated: Date;
 }

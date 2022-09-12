@@ -1,36 +1,56 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm'
-import { User } from './User'
-import { Category } from './Category'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { User } from "./User";
+import { Category } from "./Category";
 
 @Entity()
 export class Movement {
-  @PrimaryGeneratedColumn('uuid')
-  id: number
+  @PrimaryGeneratedColumn("uuid")
+  id: number;
 
   @Column({
     nullable: false,
   })
-  value: number
+  value: number;
 
   @Column({
     nullable: false,
   })
-  description: string
+  description: string;
 
   @Column({
     nullable: false,
   })
-  type: string
+  type: string;
 
   @OneToOne((type) => User, (user) => user.id, {
     cascade: true,
     nullable: false,
   })
-  user: User
+  user: User;
 
   @OneToOne((type) => Category, (category) => category.id, {
     cascade: true,
     nullable: false,
   })
-  category: Category
+  category: Category;
+
+  @CreateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP(6)",
+  })
+  datetime_created: Date;
+
+  @UpdateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP(6)",
+    onUpdate: "CURRENT_TIMESTAMP(6)",
+  })
+  datetime_updated: Date;
 }
