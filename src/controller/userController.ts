@@ -75,7 +75,7 @@ export default class UserController {
   selectUsers = (req: Request, res: Response) => {
     const selectUserUseCase = new SelectUsersUseCase(this.userRepository);
 
-    const { limit, offset } = req.query;
+    const { limit = 10, offset = 1 } = req.query;
 
     selectUserUseCase
       .execute(Number(limit), Number(offset))

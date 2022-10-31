@@ -85,7 +85,7 @@ export default class CategoryController {
       this.categoryRepository
     );
 
-    const { limit, offset } = req.query;
+    const { limit = 10, offset = 1 } = req.query;
 
     selectCategoryUseCase
       .execute(Number(limit), Number(offset))
