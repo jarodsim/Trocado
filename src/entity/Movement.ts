@@ -2,9 +2,9 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from "typeorm";
 import { User } from "./User";
 import { Category } from "./Category";
@@ -29,15 +29,17 @@ export class Movement {
   })
   type: string;
 
-  @OneToOne((type) => User, (user) => user.id, {
+  @ManyToOne(() => User, (user) => user.id, {
     cascade: true,
-    nullable: false,
+    nullable: true,
+    onDelete: "CASCADE",
   })
   user: User;
 
-  @OneToOne((type) => Category, (category) => category.id, {
+  @ManyToOne(() => Category, (category) => category.id, {
     cascade: true,
-    nullable: false,
+    nullable: true,
+    onDelete: "CASCADE",
   })
   category: Category;
 

@@ -2,9 +2,9 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from "typeorm";
 import { User } from "./User";
 import { Category } from "./Category";
@@ -49,15 +49,17 @@ export class FutureMovement {
   })
   remaining_settlements: number;
 
-  @OneToOne((type) => User, (user) => user.id, {
+  @ManyToOne(() => User, (user) => user.id, {
     cascade: true,
     nullable: false,
+    onDelete: "CASCADE",
   })
   user: User;
 
-  @OneToOne((type) => Category, (category) => category.id, {
+  @ManyToOne(() => Category, (category) => category.id, {
     cascade: true,
     nullable: false,
+    onDelete: "CASCADE",
   })
   category: Category;
 

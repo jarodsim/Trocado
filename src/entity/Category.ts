@@ -2,10 +2,12 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
 } from "typeorm";
+import { FutureMovement } from "./FutureMovement";
 import { User } from "./User";
 
 @Entity()
@@ -18,9 +20,10 @@ export class Category {
   })
   name: string;
 
-  @OneToOne((type) => User, (user) => user.id, {
+  @ManyToOne(() => User, (user) => user.id, {
     cascade: true,
-    nullable: false,
+    nullable: true,
+    onDelete: "CASCADE",
   })
   user: User;
 
@@ -36,4 +39,10 @@ export class Category {
     onUpdate: "CURRENT_TIMESTAMP(6)",
   })
   datetime_updated: Date;
+
+  @OneToMany(() => FutureMovement, (future_movement) => future_movement.id, {
+    cascade: true,
+    nullable: true,
+  })
+  future_movements: FutureMovement[];
 }

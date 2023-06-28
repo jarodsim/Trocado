@@ -2,9 +2,9 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from "typeorm";
 import { User } from "./User";
 
@@ -18,7 +18,7 @@ export class Balance {
   })
   total: number;
 
-  @OneToOne((type) => User, (user) => user.id, {
+  @ManyToOne(() => User, (user) => user.id, {
     cascade: true,
     nullable: false,
   })
