@@ -39,7 +39,7 @@ export default class MovementController {
     const { id } = req.params;
 
     getMovementUseCase
-      .execute(id as unknown as number)
+      .execute(id)
       .then((movementResponse) => {
         res.json(movementResponse);
       })
@@ -71,7 +71,7 @@ export default class MovementController {
     const { id } = req.params;
 
     deleteMovementUseCase
-      .execute(id as unknown as number)
+      .execute(id)
       .then((movementResponse) => {
         res.json(movementResponse);
       })

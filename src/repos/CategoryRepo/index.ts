@@ -7,9 +7,9 @@ export interface ICategoryRepo {
   findCategoryByName: (name: string) => Promise<Category | null>;
   createCategory: (category: Category) => Promise<Category>;
   updateCategory: (category: Category) => Promise<Category>;
-  getCategory: (id: number) => Promise<Category | null>;
+  getCategory: (id: string) => Promise<Category | null>;
   selectCategories: (limit: number, offset: number) => Promise<Category[]>;
-  deleteCategory: (id: number) => Promise<Category>;
+  deleteCategory: (id: string) => Promise<Category>;
 }
 
 export default class CategoryRepository implements ICategoryRepo {
@@ -32,7 +32,7 @@ export default class CategoryRepository implements ICategoryRepo {
     return categorySaved;
   };
 
-  getCategory = async (id: number): Promise<Category> => {
+  getCategory = async (id: string): Promise<Category> => {
     const category = await this.ormRepository.manager
       .findOneBy(CategoryEntity, { id })
       .catch((error) => {
@@ -60,7 +60,7 @@ export default class CategoryRepository implements ICategoryRepo {
     return category;
   };
 
-  deleteCategory = async (id: number): Promise<Category> => {
+  deleteCategory = async (id: string): Promise<Category> => {
     const deletedCategory = await this.ormRepository.manager.findOneBy(CategoryEntity, {
       id,
     });
@@ -103,4 +103,10 @@ export default class CategoryRepository implements ICategoryRepo {
 
     return categorys;
   };
+
+  isEmpty = async (): Promise<boolean> => {
+    const categorys = await this.ormRepository.manager.find(CategoryEntity);
+
+    return categorys.length === 0;
+  }
 }

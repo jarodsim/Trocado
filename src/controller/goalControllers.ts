@@ -35,7 +35,7 @@ export default class GoalController {
     const { id } = req.params;
 
     getGoalUseCase
-      .execute(id as unknown as number)
+      .execute(id)
       .then((goalResponse) => {
         res.json(goalResponse);
       })
@@ -63,7 +63,7 @@ export default class GoalController {
     const { id } = req.params;
 
     deleteGoalUseCase
-      .execute(id as unknown as number)
+      .execute(id)
       .then((goalResponse) => {
         res.json(goalResponse);
       })

@@ -6,9 +6,9 @@ import { Movement as MovementEntity } from "../../entity/Movement";
 export interface IMovementRepo {
   createMovement: (movement: Movement) => Promise<Movement>;
   updateMovement: (movement: Movement) => Promise<Movement>;
-  getMovement: (id: number) => Promise<Movement | null>;
+  getMovement: (id: string) => Promise<Movement | null>;
   selectMovements: (limit: number, offset: number) => Promise<Movement[]>;
-  deleteMovement: (id: number) => Promise<Movement>;
+  deleteMovement: (id: string) => Promise<Movement>;
 }
 
 export default class MovementRepository implements IMovementRepo {
@@ -33,7 +33,7 @@ export default class MovementRepository implements IMovementRepo {
     return movementSaved;
   };
 
-  getMovement = async (id: number): Promise<Movement> => {
+  getMovement = async (id: string): Promise<Movement> => {
     const movement = await this.ormRepository.manager
       .findOneBy(MovementEntity, { id })
       .catch((error) => {
@@ -63,7 +63,7 @@ export default class MovementRepository implements IMovementRepo {
     return movement;
   };
 
-  deleteMovement = async (id: number): Promise<Movement> => {
+  deleteMovement = async (id: string): Promise<Movement> => {
     const deletedMovement = await this.ormRepository.manager.findOneBy(
       MovementEntity,
       {
@@ -98,4 +98,14 @@ export default class MovementRepository implements IMovementRepo {
 
     return movements;
   };
+
+  isEmpty = async (): Promise<boolean> => {
+    const movement = await this.ormRepository.manager
+      .findOneBy(MovementEntity, {})
+      .catch((error) => {
+        throw new Error(`Error on check if movement table is empty: ${error}`);
+      });
+
+    return movement === undefined;
+  }
 }

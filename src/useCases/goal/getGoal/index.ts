@@ -7,7 +7,7 @@ export default class GetGoal {
     this.repository = repository;
   }
 
-  execute = async (id: number) => {
+  execute = async (id: string) => {
     const goal = await this.repository.getGoal(id);
 
     return goal;

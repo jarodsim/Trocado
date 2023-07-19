@@ -7,7 +7,7 @@ export default class DeleteBalance {
     this.repository = repository;
   }
 
-  execute = async (id: number) => {
+  execute = async (id: string) => {
     const deletedBalance = await this.repository.deleteBalance(id);
 
     return deletedBalance;

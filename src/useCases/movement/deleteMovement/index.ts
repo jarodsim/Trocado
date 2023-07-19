@@ -7,7 +7,7 @@ export default class DeleteMovement {
     this.repository = repository;
   }
 
-  execute = async (id: number) => {
+  execute = async (id: string) => {
     const deletedMovement = await this.repository.deleteMovement(id);
 
     return deletedMovement;

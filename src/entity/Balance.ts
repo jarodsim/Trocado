@@ -11,7 +11,7 @@ import { User } from "./User";
 @Entity()
 export class Balance {
   @PrimaryGeneratedColumn("uuid")
-  id: number;
+  id: string;
 
   @Column({
     nullable: false,

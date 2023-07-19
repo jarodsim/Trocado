@@ -7,7 +7,7 @@ export default class GetMovement {
     this.repository = repository;
   }
 
-  execute = async (id: number) => {
+  execute = async (id: string) => {
     const category = await this.repository.getMovement(id);
 
     return category;

@@ -5,9 +5,9 @@ import { Balance as BalanceEntity } from "../../entity/Balance";
 
 export interface IBalanceRepo {
   createBalance: (balance: Balance) => Promise<Balance>;
-  getBalance: (id: number) => Promise<Balance>;
+  getBalance: (id: string) => Promise<Balance>;
   updateBalance: (balance: Balance) => Promise<Balance>;
-  deleteBalance: (id: number) => Promise<Balance>;
+  deleteBalance: (id: string) => Promise<Balance>;
 }
 
 export default class BalanceRepository implements IBalanceRepo {
@@ -30,7 +30,7 @@ export default class BalanceRepository implements IBalanceRepo {
     return balanceSaved;
   };
 
-  getBalance = async (id: number) => {
+  getBalance = async (id: string) => {
     const balance = await this.ormRepository.manager
       .findOneBy(BalanceEntity, { id })
       .catch((error) => {
@@ -58,7 +58,7 @@ export default class BalanceRepository implements IBalanceRepo {
     return balance;
   };
 
-  deleteBalance = async (id: number) => {
+  deleteBalance = async (id: string) => {
     const deletedBalance = await this.ormRepository.manager.findOneBy(
       BalanceEntity,
       {

@@ -1,5 +1,5 @@
 interface CategoryProps {
-  id?: number;
+  id: string
   title: string;
   total_amount: number;
   type: string;
@@ -9,7 +9,7 @@ interface CategoryProps {
 }
 
 export default class Category {
-  id?: number;
+  id: string
   title: string;
   total_amount: number;
   type: string;

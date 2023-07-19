@@ -12,7 +12,7 @@ import { Category } from "./Category";
 @Entity()
 export class Movement {
   @PrimaryGeneratedColumn("uuid")
-  id: number;
+  id: string;
 
   @Column({
     nullable: false,

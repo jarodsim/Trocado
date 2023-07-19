@@ -1,10 +1,10 @@
 interface BalanceProps {
-  id?: number;
+  id: string
   total: number;
 }
 
 export default class Balance {
-  id?: number;
+  id: string
   total: number;
 
   constructor(props: BalanceProps) {

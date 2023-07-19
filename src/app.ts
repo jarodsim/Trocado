@@ -1,25 +1,28 @@
-import * as express from "express";
-import * as bodyParser from "body-parser";
-import * as cors from "cors";
-import * as logger from "morgan";
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import logger from "morgan";
+import admin from "firebase-admin";
+import serviceAccount from "./config/serviceAccountKey.json";
 
-// import { connectDB } from './config/db'
 import { routers } from "./routers/routers";
 import { seed } from "./config/seed";
 
-// create the app
 export const app = express();
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+});
+
 app.use(cors());
 app.use(bodyParser.json());
 
-// config log
 app.use(logger("dev"));
-
-// connect to database
-// connectDB()
 
 app.use(routers);
 
-setTimeout(() => {
-  seed();
-}, 2000);
+if (process.env.NODE_ENV === "development") {
+  setTimeout(() => {
+    seed();
+  }, 2000);
+}

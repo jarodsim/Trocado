@@ -7,7 +7,7 @@ export default class DeleteCategory {
     this.repository = repository;
   }
 
-  execute = async (id: number) => {
+  execute = async (id: string) => {
     const deletedCategory = await this.repository.deleteCategory(id);
 
     return deletedCategory;

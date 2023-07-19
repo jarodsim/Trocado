@@ -1,6 +1,6 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
@@ -13,8 +13,10 @@ import { Movement } from "./Movement";
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn("uuid")
-  id: number;
+  @PrimaryColumn("uuid", {
+    generated: false,
+  })
+  id: string;
 
   @Column({
     nullable: false,

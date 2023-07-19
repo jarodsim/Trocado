@@ -7,9 +7,9 @@ export interface IUserRepo {
   findUserByEmail: (email: string) => Promise<User | null>;
   createUser: (user: User) => Promise<User>;
   updateUser: (user: User) => Promise<User>;
-  getUser: (id: number) => Promise<User | null>;
+  getUser: (id: string) => Promise<User | null>;
   selectUsers: (limit: number, offset: number) => Promise<User[]>;
-  deleteUser: (id: number) => Promise<User>;
+  deleteUser: (id: string) => Promise<User>;
 }
 
 export default class UserRepository implements IUserRepo {
@@ -32,7 +32,7 @@ export default class UserRepository implements IUserRepo {
     return userSaved;
   };
 
-  getUser = async (id: number): Promise<User> => {
+  getUser = async (id: string): Promise<User> => {
     const user = await this.ormRepository.manager
       .findOneBy(UserEntity, { id })
       .catch((error) => {
@@ -60,7 +60,7 @@ export default class UserRepository implements IUserRepo {
     return user;
   };
 
-  deleteUser = async (id: number): Promise<User> => {
+  deleteUser = async (id: string): Promise<User> => {
     const deletedUser = await this.ormRepository.manager.findOneBy(UserEntity, {
       id,
     });
@@ -102,5 +102,15 @@ export default class UserRepository implements IUserRepo {
       });
 
     return users;
+  };
+
+  isEmpty = async (): Promise<boolean> => {
+    const users = await this.ormRepository.manager
+      .find(UserEntity)
+      .catch((error) => {
+        throw new Error(`Error on check if user table is empty: ${error}`);
+      });
+
+    return users.length === 0;
   };
 }

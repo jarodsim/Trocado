@@ -39,7 +39,7 @@ export default class CategoryController {
     const { id } = req.params;
 
     getCategoryUseCase
-      .execute(id as unknown as number)
+      .execute(id)
       .then((categoryResponse) => {
         res.json(categoryResponse);
       })
@@ -71,7 +71,7 @@ export default class CategoryController {
     const { id } = req.params;
 
     deleteCategoryUseCase
-      .execute(id as unknown as number)
+      .execute(id)
       .then((categoryResponse) => {
         res.json(categoryResponse);
       })

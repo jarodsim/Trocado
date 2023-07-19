@@ -13,7 +13,7 @@ import { User } from "./User";
 @Entity()
 export class Category {
   @PrimaryGeneratedColumn("uuid")
-  id: number;
+  id: string;
 
   @Column({
     nullable: false,

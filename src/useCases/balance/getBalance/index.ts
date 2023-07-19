@@ -7,7 +7,7 @@ export default class GetBalance {
     this.repository = repository;
   }
 
-  execute = async (id: number) => {
+  execute = async (id: string) => {
     const balance = await this.repository.getBalance(id);
 
     return balance;

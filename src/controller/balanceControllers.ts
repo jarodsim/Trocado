@@ -35,7 +35,7 @@ export default class BalanceController {
     const { id } = req.params;
 
     getBalanceUseCase
-      .execute(id as unknown as number)
+      .execute(id)
       .then((balanceResponse) => {
         res.json(balanceResponse);
       })
@@ -63,7 +63,7 @@ export default class BalanceController {
     const { id } = req.params;
 
     deleteBalanceUseCase
-      .execute(id as unknown as number)
+      .execute(id)
       .then((balanceResponse) => {
         res.json(balanceResponse);
       })

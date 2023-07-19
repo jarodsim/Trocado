@@ -7,7 +7,7 @@ export default class GetCategory {
     this.repository = repository;
   }
 
-  execute = async (id: number) => {
+  execute = async (id: string) => {
     const category = await this.repository.getCategory(id);
 
     return category;

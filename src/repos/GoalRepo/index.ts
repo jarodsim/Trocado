@@ -6,14 +6,14 @@ import { Goal as GoalEntity } from "../../entity/Goal";
 export interface IGoalRepo {
   createGoal: (goal: Goal) => Promise<Goal>;
   updateGoal: (goal: Goal) => Promise<Goal>;
-  getGoal: (id: number) => Promise<Goal | null>;
+  getGoal: (id: string) => Promise<Goal | null>;
   selectGoals: (
     limit: number,
     offset: number,
     title?: string,
     total_amount?: number
   ) => Promise<Goal[]>;
-  deleteGoal: (id: number) => Promise<Goal>;
+  deleteGoal: (id: string) => Promise<Goal>;
 }
 
 export default class GoalRepository implements IGoalRepo {
@@ -41,7 +41,7 @@ export default class GoalRepository implements IGoalRepo {
     return goalSaved;
   };
 
-  getGoal = async (id: number): Promise<Goal> => {
+  getGoal = async (id: string): Promise<Goal> => {
     const goal = await this.ormRepository.manager
       .findOneBy(GoalEntity, { id })
       .catch((error) => {
@@ -74,7 +74,7 @@ export default class GoalRepository implements IGoalRepo {
     return goal;
   };
 
-  deleteGoal = async (id: number): Promise<Goal> => {
+  deleteGoal = async (id: string): Promise<Goal> => {
     const deletedGoal = await this.ormRepository.manager.findOneBy(GoalEntity, {
       id,
     });

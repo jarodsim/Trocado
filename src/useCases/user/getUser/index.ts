@@ -7,7 +7,7 @@ export default class GetUser {
     this.repository = repository;
   }
 
-  execute = async (id: number) => {
+  execute = async (id: string) => {
     const user = await this.repository.getUser(id);
 
     return user;

@@ -7,7 +7,7 @@ export default class DeleteGoal {
     this.repository = repository;
   }
 
-  execute = async (id: number) => {
+  execute = async (id: string) => {
     const deletedGoal = await this.repository.deleteGoal(id);
 
     return deletedGoal;

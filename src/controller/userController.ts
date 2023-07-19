@@ -35,7 +35,7 @@ export default class UserController {
     const { id } = req.params;
 
     getUserUseCase
-      .execute(id as unknown as number)
+      .execute(id)
       .then((userResponse) => {
         res.json(userResponse);
       })
@@ -63,7 +63,7 @@ export default class UserController {
     const { id } = req.params;
 
     deleteUserUseCase
-      .execute(id as unknown as number)
+      .execute(id)
       .then((userResponse) => {
         res.json(userResponse);
       })

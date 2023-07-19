@@ -1,5 +1,5 @@
 interface MovementProps {
-  id?: number;
+  id: string
   value: number;
   description: string;
   type: string;
@@ -8,7 +8,7 @@ interface MovementProps {
 }
 
 export default class Movement {
-  id?: number;
+  id: string
   value: number;
   description: string;
   type: string;
