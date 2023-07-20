@@ -10,4 +10,7 @@ export const errorLabels = {
   errorWhenUpdatingUser: "error_when_updating_user",
   errorWhenDeletingUser: "error_when_deleting_user",
   errorWhenSelectUsers: "error_when_select_users",
+  invalidCredentials: "invalid_credentials",
+  errorWhenAuthenticating: "error_when_authenticating",
+  errorWhenLoggingOut: "error_when_logging_out",
 };

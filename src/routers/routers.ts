@@ -4,6 +4,7 @@ import UserController from "../controller/userController";
 import BalanceController from "../controller/balanceControllers";
 import CategoryController from "../controller/categoryController";
 import MovementController from "../controller/movementControllers";
+import AuthController from "../controller/authController";
 
 export const routers = Router();
 
@@ -11,6 +12,7 @@ const userController = new UserController();
 const balanceController = new BalanceController();
 const categoryController = new CategoryController();
 const movementController = new MovementController();
+const authController = new AuthController();
 
 routers.post("/user", userController.createUser);
 routers.put("/user", userController.updateUser);
@@ -34,3 +36,6 @@ routers.put("/movement", movementController.updateMovement);
 routers.get("/movement/:id", movementController.getMovement);
 routers.delete("/movement/:id", movementController.deleteMovement);
 routers.get("/movements", movementController.selectMovements);
+
+routers.post("/login", authController.login);
+routers.get("/logout", authController.logout);
