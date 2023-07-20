@@ -24,6 +24,16 @@ export class User {
   })
   email: string;
 
+  @Column({
+    nullable: false,
+  })
+  name: string;
+
+  @Column({
+    nullable: false,
+  })
+  surname: string;
+
   @CreateDateColumn({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP(6)",

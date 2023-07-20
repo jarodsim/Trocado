@@ -1,4 +1,4 @@
-interface CategoryProps {
+interface GoalProps {
   id: string
   title: string;
   total_amount: number;
@@ -8,7 +8,7 @@ interface CategoryProps {
   datetime_end: Date;
 }
 
-export default class Category {
+export default class Goal {
   id: string
   title: string;
   total_amount: number;
@@ -17,7 +17,7 @@ export default class Category {
   datetime_start: Date;
   datetime_end: Date;
 
-  constructor(props: CategoryProps) {
+  constructor(props: GoalProps) {
     this.id = props.id;
     this.title = props.title;
     this.datetime_end = props.datetime_end;

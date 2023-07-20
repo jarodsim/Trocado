@@ -8,6 +8,14 @@ import UpdateUserUseCase from "../useCases/user/updateUser";
 import GetUserUseCase from "../useCases/user/getUser";
 import DeleteUserUseCase from "../useCases/user/deleteUser";
 import SelectUsersUseCase from "../useCases/user/selectUsers";
+import { errorLabels } from "../erros/labels";
+import { isEmail } from "../utils/isEmail";
+import { isPasswordStrong } from "../utils/isPasswordStrong";
+
+import admin from "firebase-admin";
+
+import { randomUUID } from "crypto";
+import { validateEntity } from "../services/validateEntity";
 
 export default class UserController {
   private userRepository: IUserRepo;
@@ -19,14 +27,70 @@ export default class UserController {
   createUser = (req: Request, res: Response) => {
     const createUserUseCase = new CreateUserUseCase(this.userRepository);
 
-    createUserUseCase
-      .execute(new User(req.body))
-      .then((userResponse) => {
-        res.json(userResponse);
-      })
-      .catch((err) => {
-        res.status(500).send(err.message || "Error when creating a new user");
-      });
+    const { email, password, name, surname } = req.body;
+
+    if (!name || !surname) {
+      return res.status(400).send(errorLabels.nameAndSurnameRequired);
+    }
+
+    if (!email || !password) {
+      return res.status(400).send(errorLabels.emailAndPasswordRequired);
+    }
+
+    if (!isEmail(email)) {
+      return res.status(400).send(errorLabels.emailInvalid);
+    }
+
+    if (isPasswordStrong(password)) {
+      return res.status(400).send(errorLabels.passwordWeak);
+    }
+
+    try {
+      const id = randomUUID();
+      const auth = admin.auth();
+
+      // creating user in firebase
+      auth
+        .createUser({
+          email,
+          password,
+          disabled: false,
+          displayName: name,
+          uid: id,
+        })
+        .then((userRecord) => {
+          const user = new User({
+            id: userRecord.uid,
+            email: userRecord.email,
+            name,
+            surname,
+          });
+
+          // creating user in database
+          createUserUseCase
+            .execute(user)
+            .then((userResponse) => {
+              res.json(userResponse);
+            })
+            .catch((err) => {
+              res.status(500).send(errorLabels.errorWhenCreatingUser);
+            });
+        })
+        .catch((error) => {
+          switch (error.code) {
+            case "auth/email-already-exists":
+              return res.status(400).send(errorLabels.emailAlreadyExists);
+            case "auth/invalid-email":
+              return res.status(400).send(errorLabels.emailInvalid);
+            case "auth/operation-not-allowed":
+              return res.status(400).send(errorLabels.operationNotAllowed);
+            default:
+              return res.status(500).send(errorLabels.errorWhenCreatingUser);
+          }
+        });
+    } catch (error) {
+      res.status(500).send(errorLabels.errorWhenCreatingUser);
+    }
   };
 
   getUser = (req: Request, res: Response) => {
@@ -40,12 +104,17 @@ export default class UserController {
         res.json(userResponse);
       })
       .catch((err) => {
-        res.status(404).send(err.message || "Error to get an user");
+        res.status(404).send(errorLabels.userNotFound);
       });
   };
 
   updateUser = (req: Request, res: Response) => {
     const updateUserUseCase = new UpdateUserUseCase(this.userRepository);
+
+    const entityValidated = validateEntity("user", req.body);
+    if (!entityValidated.success) {
+      return res.status(400).send(entityValidated.error);
+    }
 
     updateUserUseCase
       .execute(new User(req.body))
@@ -53,7 +122,7 @@ export default class UserController {
         res.json(userResponse);
       })
       .catch((err) => {
-        res.status(500).send(err.message || "Error to update an user");
+        res.status(500).send(errorLabels.errorWhenUpdatingUser);
       });
   };
 
@@ -68,7 +137,7 @@ export default class UserController {
         res.json(userResponse);
       })
       .catch((err) => {
-        res.status(500).send(err.message || "Error to delete an user");
+        res.status(500).send(errorLabels.errorWhenDeletingUser);
       });
   };
 
@@ -83,7 +152,7 @@ export default class UserController {
         res.json(userResponse);
       })
       .catch((err) => {
-        res.status(500).send(err.message || "Error to select users");
+        res.status(500).send(errorLabels.errorWhenSelectUsers);
       });
   };
 }

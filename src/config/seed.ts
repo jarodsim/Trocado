@@ -26,6 +26,8 @@ export async function seed() {
     const user = await createUser.execute({
       id: randomUUID(),
       email: faker.internet.email(),
+      name: faker.name.firstName(),
+      surname: faker.name.lastName(),
     });
     console.log({ user });
   }

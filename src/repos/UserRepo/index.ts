@@ -10,6 +10,7 @@ export interface IUserRepo {
   getUser: (id: string) => Promise<User | null>;
   selectUsers: (limit: number, offset: number) => Promise<User[]>;
   deleteUser: (id: string) => Promise<User>;
+  isEmpty: () => Promise<boolean>;
 }
 
 export default class UserRepository implements IUserRepo {
@@ -24,6 +25,8 @@ export default class UserRepository implements IUserRepo {
       .save(UserEntity, {
         id: user.id,
         email: user.email,
+        name: user.name,
+        surname: user.surname,
       })
       .catch((error) => {
         throw new Error(`Error on create user repo: ${error}`);
@@ -51,6 +54,8 @@ export default class UserRepository implements IUserRepo {
         },
         {
           email: user.email,
+          name: user.name,
+          surname: user.surname,
         }
       )
       .catch((error) => {
