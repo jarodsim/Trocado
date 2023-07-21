@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm";
+import { Repository } from "typeorm";
 import { myDataSource } from "../../config/db";
 import User from "../../domain/User";
 import { User as UserEntity } from "../../entity/User";
@@ -14,15 +14,15 @@ export interface IUserRepo {
 }
 
 export default class UserRepository implements IUserRepo {
-  private ormRepository: DataSource;
+  private ormRepository: Repository<UserEntity>;
 
   constructor() {
-    this.ormRepository = myDataSource;
+    this.ormRepository = myDataSource.getRepository(UserEntity);
   }
 
   createUser = async (user: User) => {
-    const userSaved = await this.ormRepository.manager
-      .save(UserEntity, {
+    const userSaved = await this.ormRepository
+      .save({
         id: user.id,
         email: user.email,
         name: user.name,
@@ -36,19 +36,16 @@ export default class UserRepository implements IUserRepo {
   };
 
   getUser = async (id: string): Promise<User> => {
-    const user = await this.ormRepository.manager
-      .findOneBy(UserEntity, { id })
-      .catch((error) => {
-        throw new Error(`Error on get user repo: ${error}`);
-      });
+    const user = await this.ormRepository.findOneBy({ id }).catch((error) => {
+      throw new Error(`Error on get user repo: ${error}`);
+    });
 
     return user;
   };
 
   updateUser = async (user: User): Promise<User> => {
-    await this.ormRepository.manager
+    await this.ormRepository
       .update(
-        UserEntity,
         {
           id: user.id,
         },
@@ -66,11 +63,11 @@ export default class UserRepository implements IUserRepo {
   };
 
   deleteUser = async (id: string): Promise<User> => {
-    const deletedUser = await this.ormRepository.manager.findOneBy(UserEntity, {
+    const deletedUser = await this.ormRepository.findOneBy({
       id,
     });
-    await this.ormRepository.manager
-      .delete(UserEntity, {
+    await this.ormRepository
+      .delete({
         id: deletedUser.id,
       })
       .catch((error) => {
@@ -81,8 +78,8 @@ export default class UserRepository implements IUserRepo {
   };
 
   findUserByEmail = async (email: string) => {
-    const user = await this.ormRepository.manager
-      .findOne(UserEntity, {
+    const user = await this.ormRepository
+      .findOne({
         where: {
           email: email,
         },
@@ -97,8 +94,8 @@ export default class UserRepository implements IUserRepo {
   selectUsers = async (limit: number, offset: number): Promise<User[]> => {
     const skip = limit * offset - limit;
 
-    const users = await this.ormRepository.manager
-      .find(UserEntity, {
+    const users = await this.ormRepository
+      .find({
         take: limit,
         skip: skip,
       })
@@ -110,11 +107,9 @@ export default class UserRepository implements IUserRepo {
   };
 
   isEmpty = async (): Promise<boolean> => {
-    const users = await this.ormRepository.manager
-      .find(UserEntity)
-      .catch((error) => {
-        throw new Error(`Error on check if user table is empty: ${error}`);
-      });
+    const users = await this.ormRepository.find().catch((error) => {
+      throw new Error(`Error on check if user table is empty: ${error}`);
+    });
 
     return users.length === 0;
   };
