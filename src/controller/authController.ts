@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import { errorLabels } from "../erros/labels";
 import { isEmail } from "../utils/isEmail";
 import { isPasswordStrong } from "../utils/isPasswordStrong";
-import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import * as admin from "firebase-admin";
+
+import * as firebaseAuth from "firebase/auth";
 
 export default class AuthController {
   login = async (req: Request, res: Response) => {
@@ -22,8 +23,8 @@ export default class AuthController {
     }
 
     try {
-      const auth = getAuth();
-      const userRecord = await signInWithEmailAndPassword(
+      const auth = firebaseAuth.getAuth();
+      const userRecord = await firebaseAuth.signInWithEmailAndPassword(
         auth,
         email,
         password
@@ -35,11 +36,15 @@ export default class AuthController {
         refreshToken,
       } = userRecord.user;
 
-      const token = await admin.auth().createCustomToken(uid);
+      const idToken = await auth.currentUser.getIdToken(true);
 
-      return res
-        .status(200)
-        .json({ uid, displayName, email: userEmail, refreshToken, token });
+      return res.status(200).json({
+        uid,
+        displayName,
+        email: userEmail,
+        refreshToken,
+        token: idToken,
+      });
     } catch (error) {
       console.log(error);
       switch (error.code) {
@@ -54,10 +59,11 @@ export default class AuthController {
 
   logout = async (req: Request, res: Response) => {
     try {
-      const auth = getAuth();
-      await auth.signOut();
-      return res.status(200).json({ success: true });
+      await admin.auth().revokeRefreshTokens(req["token"].uid);
+
+      return res.status(200);
     } catch (error) {
+      console.log(error);
       return res.status(500).send(errorLabels.errorWhenLoggingOut);
     }
   };

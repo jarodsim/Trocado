@@ -5,6 +5,7 @@ import BalanceController from "../controller/balanceControllers";
 import CategoryController from "../controller/categoryController";
 import MovementController from "../controller/movementControllers";
 import AuthController from "../controller/authController";
+import { validateToken } from "../middlewares/auth";
 
 export const routers = Router();
 
@@ -15,27 +16,35 @@ const movementController = new MovementController();
 const authController = new AuthController();
 
 routers.post("/user", userController.createUser);
-routers.put("/user", userController.updateUser);
-routers.get("/user/:id", userController.getUser);
-routers.delete("/user/:id", userController.deleteUser);
-routers.get("/users", userController.selectUsers);
+routers.put("/user", validateToken, userController.updateUser);
+routers.get("/user/:id", validateToken, userController.getUser);
+routers.delete("/user/:id", validateToken, userController.deleteUser);
+routers.get("/users", validateToken, userController.selectUsers);
 
-routers.post("/balance", balanceController.createBalance);
-routers.get("/balance/:id", balanceController.getBalance);
-routers.put("/balance", balanceController.updateBalance);
-routers.delete("/balance/:id", balanceController.deleteBalance);
+routers.post("/balance", validateToken, balanceController.createBalance);
+routers.get("/balance/:id", validateToken, balanceController.getBalance);
+routers.put("/balance", validateToken, balanceController.updateBalance);
+routers.delete("/balance/:id", validateToken, balanceController.deleteBalance);
 
-routers.post("/category", categoryController.createCategory);
-routers.put("/category", categoryController.updateCategory);
-routers.get("/category/:id", categoryController.getCategory);
-routers.delete("/category/:id", categoryController.deleteCategory);
-routers.get("/categories", categoryController.selectCategorys);
+routers.post("/category", validateToken, categoryController.createCategory);
+routers.put("/category", validateToken, categoryController.updateCategory);
+routers.get("/category/:id", validateToken, categoryController.getCategory);
+routers.delete(
+  "/category/:id",
+  validateToken,
+  categoryController.deleteCategory
+);
+routers.get("/categories", validateToken, categoryController.selectCategorys);
 
-routers.post("/movement", movementController.createMovement);
-routers.put("/movement", movementController.updateMovement);
-routers.get("/movement/:id", movementController.getMovement);
-routers.delete("/movement/:id", movementController.deleteMovement);
-routers.get("/movements", movementController.selectMovements);
+routers.post("/movement", validateToken, movementController.createMovement);
+routers.put("/movement", validateToken, movementController.updateMovement);
+routers.get("/movement/:id", validateToken, movementController.getMovement);
+routers.delete(
+  "/movement/:id",
+  validateToken,
+  movementController.deleteMovement
+);
+routers.get("/movements", validateToken, movementController.selectMovements);
 
 routers.post("/login", authController.login);
-routers.get("/logout", authController.logout);
+routers.get("/logout", validateToken, authController.logout);
