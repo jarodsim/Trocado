@@ -13,4 +13,6 @@ export const errorLabels = {
   invalidCredentials: "invalid_credentials",
   errorWhenAuthenticating: "error_when_authenticating",
   errorWhenLoggingOut: "error_when_logging_out",
+  invalidToken: "invalid_token",
+  tokenRequired: "token_required",
 };
