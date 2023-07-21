@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm";
+import { Repository } from "typeorm";
 import { myDataSource } from "../../config/db";
 import Movement from "../../domain/Movement";
 import { Movement as MovementEntity } from "../../entity/Movement";
@@ -9,22 +9,25 @@ export interface IMovementRepo {
   getMovement: (id: string) => Promise<Movement | null>;
   selectMovements: (limit: number, offset: number) => Promise<Movement[]>;
   deleteMovement: (id: string) => Promise<Movement>;
+  isEmpty: () => Promise<boolean>;
 }
 
 export default class MovementRepository implements IMovementRepo {
-  private ormRepository: DataSource;
+  private ormRepository: Repository<MovementEntity>;
 
   constructor() {
-    this.ormRepository = myDataSource;
+    this.ormRepository = myDataSource.getRepository(MovementEntity);
   }
 
   createMovement = async (movement: Movement) => {
-    const movementSaved = await this.ormRepository.manager
-      .save(MovementEntity, {
+    const movementSaved = await this.ormRepository
+      .save({
         id: movement.id,
         value: movement.value,
         description: movement.description,
         type: movement.type,
+        user: movement.user,
+        category: movement.category,
       })
       .catch((error) => {
         throw new Error(`Error on create movement repo: ${error}`);
@@ -34,8 +37,8 @@ export default class MovementRepository implements IMovementRepo {
   };
 
   getMovement = async (id: string): Promise<Movement> => {
-    const movement = await this.ormRepository.manager
-      .findOneBy(MovementEntity, { id })
+    const movement = await this.ormRepository
+      .findOneBy({ id })
       .catch((error) => {
         throw new Error(`Error on get movement repo: ${error}`);
       });
@@ -44,9 +47,8 @@ export default class MovementRepository implements IMovementRepo {
   };
 
   updateMovement = async (movement: Movement): Promise<Movement> => {
-    await this.ormRepository.manager
+    await this.ormRepository
       .update(
-        MovementEntity,
         {
           id: movement.id,
         },
@@ -54,6 +56,8 @@ export default class MovementRepository implements IMovementRepo {
           value: movement.value,
           description: movement.description,
           type: movement.type,
+          user: movement.user,
+          category: movement.category,
         }
       )
       .catch((error) => {
@@ -64,14 +68,11 @@ export default class MovementRepository implements IMovementRepo {
   };
 
   deleteMovement = async (id: string): Promise<Movement> => {
-    const deletedMovement = await this.ormRepository.manager.findOneBy(
-      MovementEntity,
-      {
-        id,
-      }
-    );
-    await this.ormRepository.manager
-      .delete(MovementEntity, {
+    const deletedMovement = await this.ormRepository.findOneBy({
+      id,
+    });
+    await this.ormRepository
+      .delete({
         id: deletedMovement.id,
       })
       .catch((error) => {
@@ -87,8 +88,8 @@ export default class MovementRepository implements IMovementRepo {
   ): Promise<Movement[]> => {
     const skip = limit * offset - limit;
 
-    const movements = await this.ormRepository.manager
-      .find(MovementEntity, {
+    const movements = await this.ormRepository
+      .find({
         take: limit,
         skip: skip,
       })
@@ -100,12 +101,8 @@ export default class MovementRepository implements IMovementRepo {
   };
 
   isEmpty = async (): Promise<boolean> => {
-    const movement = await this.ormRepository.manager
-      .findOneBy(MovementEntity, {})
-      .catch((error) => {
-        throw new Error(`Error on check if movement table is empty: ${error}`);
-      });
+    const movments = await this.ormRepository.find();
 
-    return movement === undefined;
-  }
+    return movments.length === 0;
+  };
 }
